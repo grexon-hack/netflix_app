@@ -1,0 +1,11 @@
+button {
+    margin: 5px;
+    padding: 3px 10px;
+    font-weight: 600;
+    border: 2px solid;
+    background-color: rgba(0, 0, 0, 0.515);
+    border-radius: 5px;
+    color: azure;
+    cursor:pointer;
+}
+

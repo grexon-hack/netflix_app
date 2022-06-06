@@ -1,0 +1,53 @@
+.containerAdmin {
+    width: 100%;
+    height: 100vh;
+    background-color: beige;
+    display: flex;
+}
+.headerAdmin {
+    width: 30%;
+    height: 100%;
+    text-align: center;
+}
+.adminUsers{
+    width: 65%;
+    height: auto;
+    padding: 5px;
+}
+.dataUser {
+    display: flex;
+    width: 100%;
+    height: 100px;
+    justify-content: space-between;
+    align-items: center;
+    background-color: aquamarine;
+    box-shadow: 0 0 5px grey;
+    padding: 0 5px;
+    gap: 10px;
+}
+
+.infoUser {
+    display: flex;
+
+}
+.infoUser .numPeli {
+    width: 180px;
+    text-align: center;
+    box-shadow: inset 0 0 5px black;
+    padding: 5px;
+}
+
+.detailpeli span {
+    padding: 10px 5px;
+}
+
+.contentRadius {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+}
