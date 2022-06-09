@@ -167,10 +167,6 @@ router.get('/admin', async (req, res) => {
             include: [{
                 model: Content,
                 include: ["Categories"]
-            }],
-            include: [{
-                model: Favorities,
-                include: ["Favorities"]
             }]
         });
 
