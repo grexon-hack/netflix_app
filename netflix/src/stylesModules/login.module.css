@@ -31,6 +31,22 @@
     box-shadow: inset 0 0 5px black, 0 0 10px black;
 
 }
+.login form {
+    width: 80%;
+    padding: 5px;
+    text-align: center;
+}
+.login form input {
+    width: 90%;
+    padding: 5px;
+    margin: 10px 0;
+
+}
+.login form p {
+    position: absolute;
+    padding: 0;
+    margin: 0;
+}
 .containerButton{
     width: 100%;
     display: flex;
@@ -92,4 +108,11 @@
 
 .containerForm form input {
     height: 20px;
+}
+
+.imageLogin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
 }

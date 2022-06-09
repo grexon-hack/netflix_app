@@ -41,6 +41,7 @@
     height: 100%;
 
 }
+
 .cardContent .image img {
     width: 100%;
     height: 100%;
@@ -57,7 +58,7 @@
 }
 
 .contentButtons {
-    width: 100px;
+    width: 200px;
     display: flex;
     justify-content: space-around;
     

@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import fetch from 'node-fetch';
-import { Category, Content, User } from '../models/tableModels.js';
+import { Category, Content, Favorities, User } from '../models/tableModels.js';
+import dotenv from 'dotenv';
 
-
+const { REACT_APP_ADMIN, REACT_APP_API_KEY } = dotenv.config().parsed;
 
 const router = Router();
 
@@ -14,11 +15,12 @@ router.get('/login/:email/:password', async (req, res) => {
             where: {
                 email,
                 password
-            }
+            },
+            include:["Favorities"]
         })
 
         if (data) return res.send(data);
-        res.send({ message: 'not found' })
+        res.status(404).send({ message: 'not found' })
 
     } catch (error) {
         res.json({ message: error.message })
@@ -27,8 +29,8 @@ router.get('/login/:email/:password', async (req, res) => {
 })
 
 router.post('/', async (req, res) => {
-    const { ID, name, email, password} = req.body;
-    
+    const { ID, name, email, password } = req.body;
+
     try {
         const [user, created] = await User.findOrCreate({
             where: {
@@ -39,7 +41,7 @@ router.post('/', async (req, res) => {
                 id: ID,
                 name,
                 password,
-                isAdmin: email === "jsarabialugo@gmail.com" && true
+                isAdmin: email === REACT_APP_ADMIN && true
             }
         });
         if (!created) return res.send({ message: `user ${user.email} already exists` })
@@ -54,7 +56,7 @@ router.post('/', async (req, res) => {
 
 
 router.post('/home', async (req, res) => {
-    
+
     const { categoria, ID } = req.body;
 
     try {
@@ -64,10 +66,10 @@ router.post('/home', async (req, res) => {
             }
         })
 
-        const data = await fetch("http://www.omdbapi.com/?apikey=508ad5e2&s=" + categoria)
+        const data = await fetch(`http://www.omdbapi.com/?apikey=${REACT_APP_API_KEY}&s=${categoria}`)
         const dataFull = await data.json();
         dataFull.Search.forEach(async element => {
-            const data = await fetch("http://www.omdbapi.com/?apikey=508ad5e2&i=" + element.imdbID)
+            const data = await fetch(`http://www.omdbapi.com/?apikey=${REACT_APP_API_KEY}&i=${element.imdbID}`)
             const dataFull = await data.json();
             let arrayCategory = dataFull.Genre.length > 1 ? dataFull.Genre.split(' ') : data.Genre;
             let num = Math.floor(((Math.random() * 100) * parseInt(dataFull.imdbID.slice(2))))
@@ -87,7 +89,7 @@ router.post('/home', async (req, res) => {
             })
         });
 
-        res.send({message: 'Ok'});
+        res.send({ message: 'Ok' });
     }
     catch (error) {
         res.json({ message: error.message })
@@ -95,10 +97,29 @@ router.post('/home', async (req, res) => {
     }
 });
 
+router.get('/user/:id', async (req, res) => {
+    const { id } = req.params;
+
+    try {
+
+        const dataUser = await User.findOne({
+            where: {
+                id
+            },
+            include:["Favorities"]
+        });
+        
+        res.send(dataUser)
+    } catch (error) {
+        res.status(404).send({ message: error.message })
+    }
+
+})
+
 router.get('/home/:ID', async (req, res) => {
-    
+
     const { ID } = req.params;
-    
+
     try {
 
         const data = await Content.findAll({
@@ -116,6 +137,28 @@ router.get('/home/:ID', async (req, res) => {
     }
 });
 
+router.post('/favorite', async (req, res) => {
+    const {UserId, id, name, image} = req.body;
+    
+    try {
+        const [user, created ] = await Favorities.findOrCreate({
+            where: {
+                id
+            },
+            defaults: {
+                name,
+                image,
+                UserId
+            }
+        })
+        
+        if (!created) return res.send({ message: `Favorite movie ${user.name} already exists` })
+        res.send({ message: 'Favorite movie has been created successfully' })
+    } catch (error) {
+        res.json({ message: error.message })
+    }
+});
+
 router.get('/admin', async (req, res) => {
 
     try {
@@ -124,6 +167,10 @@ router.get('/admin', async (req, res) => {
             include: [{
                 model: Content,
                 include: ["Categories"]
+            }],
+            include: [{
+                model: Favorities,
+                include: ["Favorities"]
             }]
         });
 
@@ -138,7 +185,7 @@ router.post('/admin', async (req, res) => {
 
     try {
         await Content.create({
-            id : parseInt(id),
+            id: parseInt(id),
             name,
             image,
             UserId
@@ -153,7 +200,7 @@ router.post('/admin', async (req, res) => {
 
         });
 
-        res.send({message: 'was created your content succesfully'});
+        res.send({ message: 'was created your content succesfully' });
     } catch (error) {
         res.json({ message: error.message })
 
@@ -161,40 +208,6 @@ router.post('/admin', async (req, res) => {
 
 });
 
-// router.patch('/admin/:id', async (req, res) => {
-//     const { id } = req.params;
-//     const { name, image } = req.body;
-//     try {
-//         await Content.update({
-//             name, image
-//         }, {
-//             where: {
-//                 id: parseInt(id)
-//             }
-//         });
-
-//         res.send({message: 'User updated'})
-//     } catch (error) {
-//         res.json({ message: error.message })
-//     }
-// })
-
-// router.post('/admin/createUser', async (req, res) => {
-//     const { id, name, email, password, picture } = req.body;
-//     try {
-//         await User.create({
-//             id,
-//             name,
-//             email,
-//             password,
-//             picture: picture && picture
-//         });
-//         res.send({message: 'User is Ok'})
-//     } catch (error) {
-//         res.json({ message: error.message })
-//     }
-
-// });
 
 router.delete('/admin/:id', async (req, res) => {
     const { id } = req.params;
@@ -207,7 +220,7 @@ router.delete('/admin/:id', async (req, res) => {
             }
         });
 
-        res.send({message: 'User was deleted'})
+        res.send({ message: 'User was deleted' })
 
     } catch (error) {
         res.json({ message: error.message })

@@ -68,6 +68,25 @@ export const Category = sequelize.define('Categories', {
 
 });
 
+export const Favorities = sequelize.define('Favorities', {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true
+
+    },
+    name : {
+        type: DataTypes.STRING,
+        allowNull:false
+    },
+    image : {
+        type : DataTypes.STRING,
+        allowNull: false
+    }
+})
+
+User.hasMany(Favorities);
+Favorities.belongsTo(User);
+
 User.hasMany(Content);
 Content.belongsTo(User);
 

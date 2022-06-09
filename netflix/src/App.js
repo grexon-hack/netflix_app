@@ -7,6 +7,7 @@ import Admin from './components/admin/admin';
 import Register from './components/register/register';
 import Detail from './components/detail/detail';
 import DetailUser from './components/admin/detailUser';
+import FavoriteMovies from './components/favorite/movieFavorite';
 
 function App() {
 
@@ -18,6 +19,7 @@ function App() {
       <Route path={'/register'} component={Register}/>
       <Route path={'/detail'} component={Detail}/>
       <Route path={'/detailuser'} component={DetailUser}/>
+      <Route path={'/favorities'} component={FavoriteMovies}/>
     </React.Fragment>
    
   );

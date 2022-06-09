@@ -1,6 +1,6 @@
 import Categories from "../login/categories";
 import style from "../../stylesModules/login.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { postUser } from "../../redux/action";
 import { hash } from "./funtExtern";
@@ -9,6 +9,7 @@ import { useHistory } from "react-router-dom";
 export default function Register() {
   const [show, setShow] = useState(false);
   const [passwordHash, setPasswordHash] = useState(null);
+  const [ loading, setLoading ] = useState(false);
   const dispatch = useDispatch();
 
   const history = useHistory()
@@ -24,15 +25,22 @@ export default function Register() {
       setShow(true);
       dispatch(postUser({ID: hash(name, email, password), name, email, password : hash(password) }));  
     } else {
-      console.log("tus contraseñas no coinsiden");
+      alert("tus contraseñas no coinsiden");
       setPasswordHash(null)
     }
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(true)
+    }, 1500);
+  },[]);
 
 
   return (
     <div className={style.containerRegister}>
       <button onClick={() => history.goBack()} style={{position:'absolute', top:'20px', left: '20px'}}>Back</button>
+      {loading?<>
       <div className={style.containerForm}>
         <h1>Register</h1>
         <form onSubmit={(e) => handlerSubmit(e)}>
@@ -70,6 +78,7 @@ export default function Register() {
         </form>
       </div>
       {show && <Categories props={passwordHash}/>}
+      </>: <h1 style={{color:'azure'}}>LOADING...</h1>}
     </div>
   );
 }
